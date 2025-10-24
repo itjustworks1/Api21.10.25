@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 
 namespace Api21._10._25.DB;
-
+/// <summary>
+/// контакт для персонального посещения
+/// </summary>
 public partial class PersonalVisitor
 {
     public int Id { get; set; }

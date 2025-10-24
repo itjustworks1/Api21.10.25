@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 
 namespace Api21._10._25.DB;
-
+/// <summary>
+/// сотрудник
+/// </summary>
 public partial class Employee
 {
     public int Id { get; set; }

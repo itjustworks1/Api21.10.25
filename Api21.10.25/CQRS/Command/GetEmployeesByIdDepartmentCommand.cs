@@ -5,19 +5,19 @@ using MyMediator.Types;
 
 namespace Api21._10._25.CQRS.Command
 {
-    public class PostPersonalCommand : IRequest
+    public class GetEmployeesByIdDepartmentCommand : IRequest
     {
         public required ApplicationDTO Application { get; set; }
-        public class PostPersonalCommandHandler : IRequestHandler<PostPersonalCommand, Unit>
+        public class ApproveCommandHandler : IRequestHandler<GetEmployeesByIdDepartmentCommand, Unit>
         {
             private readonly Api211025Context db;
-            public PostPersonalCommandHandler(Api211025Context db)
+            public ApproveCommandHandler(Api211025Context db)
             {
                 this.db = db;
                 ApplicationType = db.ApplicationTypes.FirstOrDefault(s => s.Value == "personal");
             }
             private ApplicationType ApplicationType {  get; set; }
-            public async Task<Unit> HandleAsync(PostPersonalCommand request, CancellationToken ct = default)
+            public async Task<Unit> HandleAsync(GetEmployeesByIdDepartmentCommand request, CancellationToken ct = default)
             {
                 db.Applications.Add( new Application() { 
                     ApplicantEmail = request.Application.ApplicantEmail,

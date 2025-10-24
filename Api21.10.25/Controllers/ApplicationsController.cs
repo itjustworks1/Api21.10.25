@@ -1,4 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Api21._10._25.CQRS.Command;
+using Api21._10._25.CQRS.DTO;
+using Api21._10._25.DB;
+using Microsoft.AspNetCore.Mvc;
+using MyMediator.Types;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace Api21._10._25.Controllers
 {
@@ -6,30 +11,44 @@ namespace Api21._10._25.Controllers
     [Route("[controller]")]
     public class ApplicationsController : ControllerBase
     {
-        [HttpPost("personal")]
-        public async void PostPersonal()
+        private readonly Mediator mediator;
+        public ApplicationsController(MyMediator.Types.Mediator mediator)
         {
-
+            this.mediator = mediator;
+        }
+        [HttpPost("personal")]
+        public async Task<ActionResult> PostPersonal(ApplicationDTO application)
+        {
+            var command = new PostPersonalCommand() { Application = application};
+            await mediator.SendAsync(command);
+            return Ok();
         }
         [HttpPost("group")]
-        public async void PostGroup()
+        public async Task<ActionResult> PostGroup(ApplicationDTO application)
         {
-
+            var command = new PostGroupCommand() { Application = application };
+            await mediator.SendAsync(command);
+            return Ok();
         }
         [HttpGet("{id}")]
-        public async void GetId()
+        public async Task<ActionResult<ApplicationDTO>> GetId(int id)
         {
-
+            var command = new GetIdCommand() { Id = id };
+            await mediator.SendAsync(command);
+            return Ok();
         }
         [HttpGet("personal/{email}")]
-        public async void GetPersonal()
+        public async Task<ActionResult> GetPersonal(string email)
         {
-
+            var command = new GetPersonalCommand() { Email = email };
+            await mediator.SendAsync(command);
+            return Ok();
         }
         [HttpGet("group/{email}")]
-        public async void GetGroup()
+        public async Task<ActionResult> GetGroup()
         {
 
+            return Ok();
         }
     }
 }

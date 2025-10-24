@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 
 namespace Api21._10._25.DB;
-
+/// <summary>
+/// Заявка на посещение
+/// </summary>
 public partial class Application
 {
     public int Id { get; set; }

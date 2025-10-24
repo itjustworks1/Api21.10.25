@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 
 namespace Api21._10._25.DB;
-
+/// <summary>
+/// один из контактов группового посещения
+/// </summary>
 public partial class GroupApplicationContact
 {
     public int Id { get; set; }

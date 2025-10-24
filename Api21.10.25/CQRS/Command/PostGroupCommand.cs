@@ -5,19 +5,19 @@ using MyMediator.Types;
 
 namespace Api21._10._25.CQRS.Command
 {
-    public class PostPersonalCommand : IRequest
+    public class PostGroupCommand : IRequest
     {
         public required ApplicationDTO Application { get; set; }
-        public class PostPersonalCommandHandler : IRequestHandler<PostPersonalCommand, Unit>
+        public class PostGroupCommandHandler : IRequestHandler<PostGroupCommand, Unit>
         {
             private readonly Api211025Context db;
-            public PostPersonalCommandHandler(Api211025Context db)
+            public PostGroupCommandHandler(Api211025Context db)
             {
                 this.db = db;
-                ApplicationType = db.ApplicationTypes.FirstOrDefault(s => s.Value == "personal");
+                ApplicationType = db.ApplicationTypes.FirstOrDefault(s => s.Value == "group");
             }
             private ApplicationType ApplicationType {  get; set; }
-            public async Task<Unit> HandleAsync(PostPersonalCommand request, CancellationToken ct = default)
+            public async Task<Unit> HandleAsync(PostGroupCommand request, CancellationToken ct = default)
             {
                 db.Applications.Add( new Application() { 
                     ApplicantEmail = request.Application.ApplicantEmail,
@@ -31,7 +31,7 @@ namespace Api21._10._25.CQRS.Command
                     Purpose = request.Application.Purpose,
                     RejectionReason = request.Application.RejectionReason,
                     StartDate = request.Application.StartDate,
-                    StatusId = request.Application.StatusId                    
+                    StatusId = request.Application.StatusId
                 });
                 db.SaveChanges();
                 return Unit.Value;
