@@ -5,36 +5,26 @@ using MyMediator.Types;
 
 namespace Api21._10._25.CQRS.Command
 {
-    public class GetGroupCommand : IRequest
+    public class GetGroupCommand : IRequest<List<RApplicationDTO>>
     {
-        public required ApplicationDTO Application { get; set; }
-        public class GetGroupCommandHandler : IRequestHandler<GetGroupCommand, Unit>
+        public required string Email { get; set; }
+        public class GetGroupCommandHandler : IRequestHandler<GetGroupCommand, List<RApplicationDTO>>
         {
             private readonly Api211025Context db;
             public GetGroupCommandHandler(Api211025Context db)
             {
                 this.db = db;
-                ApplicationType = db.ApplicationTypes.FirstOrDefault(s => s.Value == "personal");
             }
-            private ApplicationType ApplicationType {  get; set; }
-            public async Task<Unit> HandleAsync(GetGroupCommand request, CancellationToken ct = default)
+            public async Task<List<RApplicationDTO>> HandleAsync(GetGroupCommand request, CancellationToken ct = default)
             {
-                db.Applications.Add( new Application() { 
-                    ApplicantEmail = request.Application.ApplicantEmail,
-                    ApplicationType = ApplicationType,
-                    ApplicationTypeId = ApplicationType.Id,
-                    CreatedAt = request.Application.CreatedAt,
-                    DepartmentId = request.Application.DepartmentId,
-                    UpdatedAt = request.Application.UpdatedAt,
-                    EmployeeId = request.Application.EmployeeId,
-                    EndDate = request.Application.EndDate,
-                    Purpose = request.Application.Purpose,
-                    RejectionReason = request.Application.RejectionReason,
-                    StartDate = request.Application.StartDate,
-                    StatusId = request.Application.StatusId                    
-                });
-                db.SaveChanges();
-                return Unit.Value;
+                return db.GroupApplicationContacts.Where(s => s.ContactEmail == request.Email).Select(s => new RApplicationDTO
+                {
+                    IdApplicationType = s.Application.ApplicationTypeId,
+                    IdDepartment = s.Application.DepartmentId,
+                    IdStatus = s.Application.StatusId,
+                    //Date = ,
+                    //ReasonRefusal = 
+                }).ToList();
             }
         }
     }

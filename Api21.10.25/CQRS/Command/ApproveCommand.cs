@@ -7,32 +7,19 @@ namespace Api21._10._25.CQRS.Command
 {
     public class ApproveCommand : IRequest
     {
-        public required ApplicationDTO Application { get; set; }
+        public required Application Application { get; set; }
         public class ApproveCommandHandler : IRequestHandler<ApproveCommand, Unit>
         {
             private readonly Api211025Context db;
             public ApproveCommandHandler(Api211025Context db)
             {
                 this.db = db;
-                ApplicationType = db.ApplicationTypes.FirstOrDefault(s => s.Value == "personal");
             }
-            private ApplicationType ApplicationType {  get; set; }
             public async Task<Unit> HandleAsync(ApproveCommand request, CancellationToken ct = default)
             {
-                db.Applications.Add( new Application() { 
-                    ApplicantEmail = request.Application.ApplicantEmail,
-                    ApplicationType = ApplicationType,
-                    ApplicationTypeId = ApplicationType.Id,
-                    CreatedAt = request.Application.CreatedAt,
-                    DepartmentId = request.Application.DepartmentId,
-                    UpdatedAt = request.Application.UpdatedAt,
-                    EmployeeId = request.Application.EmployeeId,
-                    EndDate = request.Application.EndDate,
-                    Purpose = request.Application.Purpose,
-                    RejectionReason = request.Application.RejectionReason,
-                    StartDate = request.Application.StartDate,
-                    StatusId = request.Application.StatusId                    
-                });
+                Status status = db.Statuses.FirstOrDefault(s => s.Value == "approved");
+                request.Application.StatusId = status.Id;
+                request.Application.Status = status;
                 db.SaveChanges();
                 return Unit.Value;
             }

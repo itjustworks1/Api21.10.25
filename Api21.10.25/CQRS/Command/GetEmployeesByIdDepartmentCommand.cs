@@ -5,36 +5,24 @@ using MyMediator.Types;
 
 namespace Api21._10._25.CQRS.Command
 {
-    public class GetEmployeesByIdDepartmentCommand : IRequest
+    public class GetEmployeesByIdDepartmentCommand : IRequest<List<EmployeeDTO>>
     {
-        public required ApplicationDTO Application { get; set; }
-        public class ApproveCommandHandler : IRequestHandler<GetEmployeesByIdDepartmentCommand, Unit>
+        public required int Id { get; set; }
+        public class ApproveCommandHandler : IRequestHandler<GetEmployeesByIdDepartmentCommand, List<EmployeeDTO>>
         {
             private readonly Api211025Context db;
             public ApproveCommandHandler(Api211025Context db)
             {
                 this.db = db;
-                ApplicationType = db.ApplicationTypes.FirstOrDefault(s => s.Value == "personal");
             }
-            private ApplicationType ApplicationType {  get; set; }
-            public async Task<Unit> HandleAsync(GetEmployeesByIdDepartmentCommand request, CancellationToken ct = default)
+            public async Task<List<EmployeeDTO>> HandleAsync(GetEmployeesByIdDepartmentCommand request, CancellationToken ct = default)
             {
-                db.Applications.Add( new Application() { 
-                    ApplicantEmail = request.Application.ApplicantEmail,
-                    ApplicationType = ApplicationType,
-                    ApplicationTypeId = ApplicationType.Id,
-                    CreatedAt = request.Application.CreatedAt,
-                    DepartmentId = request.Application.DepartmentId,
-                    UpdatedAt = request.Application.UpdatedAt,
-                    EmployeeId = request.Application.EmployeeId,
-                    EndDate = request.Application.EndDate,
-                    Purpose = request.Application.Purpose,
-                    RejectionReason = request.Application.RejectionReason,
-                    StartDate = request.Application.StartDate,
-                    StatusId = request.Application.StatusId                    
-                });
-                db.SaveChanges();
-                return Unit.Value;
+                return db.Employees.Where(s => s.DepartmentId == request.Id).Select(s => new EmployeeDTO()
+                {
+                    Id = s.Id,
+                    DepartmentId = s.DepartmentId,
+                    FullName = s.FullName
+                }).ToList();
             }
         }
     }

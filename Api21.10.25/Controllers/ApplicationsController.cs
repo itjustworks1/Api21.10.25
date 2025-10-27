@@ -38,17 +38,18 @@ namespace Api21._10._25.Controllers
             return Ok();
         }
         [HttpGet("personal/{email}")]
-        public async Task<ActionResult> GetPersonal(string email)
+        public async Task<ActionResult<List<RApplicationDTO>>> GetPersonal(string email)
         {
             var command = new GetPersonalCommand() { Email = email };
-            await mediator.SendAsync(command);
-            return Ok();
+            var result = await mediator.SendAsync(command);
+            return Ok(result);
         }
         [HttpGet("group/{email}")]
-        public async Task<ActionResult> GetGroup()
+        public async Task<ActionResult<List<RApplicationDTO>>> GetGroup(string email)
         {
-
-            return Ok();
+            var command = new GetGroupCommand() { Email = email };
+            var result = await mediator.SendAsync(command);
+            return Ok(result);
         }
     }
 }

@@ -5,36 +5,32 @@ using MyMediator.Types;
 
 namespace Api21._10._25.CQRS.Command
 {
-    public class GetRequestsByIdDepartmentCommand : IRequest
+    public class GetRequestsByIdDepartmentCommand : IRequest<List<ApplicationDTO>>
     {
-        public required ApplicationDTO Application { get; set; }
-        public class GetRequestsByIdDepartmentCommandHandler : IRequestHandler<GetRequestsByIdDepartmentCommand, Unit>
+        public required int Id { get; set; }
+        public class GetRequestsByIdDepartmentCommandHandler : IRequestHandler<GetRequestsByIdDepartmentCommand, List<ApplicationDTO>>
         {
             private readonly Api211025Context db;
             public GetRequestsByIdDepartmentCommandHandler(Api211025Context db)
             {
                 this.db = db;
-                ApplicationType = db.ApplicationTypes.FirstOrDefault(s => s.Value == "personal");
             }
-            private ApplicationType ApplicationType {  get; set; }
-            public async Task<Unit> HandleAsync(GetRequestsByIdDepartmentCommand request, CancellationToken ct = default)
+            public async Task<List<ApplicationDTO>> HandleAsync(GetRequestsByIdDepartmentCommand request, CancellationToken ct = default)
             {
-                db.Applications.Add( new Application() { 
-                    ApplicantEmail = request.Application.ApplicantEmail,
-                    ApplicationType = ApplicationType,
-                    ApplicationTypeId = ApplicationType.Id,
-                    CreatedAt = request.Application.CreatedAt,
-                    DepartmentId = request.Application.DepartmentId,
-                    UpdatedAt = request.Application.UpdatedAt,
-                    EmployeeId = request.Application.EmployeeId,
-                    EndDate = request.Application.EndDate,
-                    Purpose = request.Application.Purpose,
-                    RejectionReason = request.Application.RejectionReason,
-                    StartDate = request.Application.StartDate,
-                    StatusId = request.Application.StatusId                    
-                });
-                db.SaveChanges();
-                return Unit.Value;
+                return db.Applications.Where(s => s.DepartmentId == request.Id).Select(s => new ApplicationDTO() { 
+                    ApplicantEmail = s.ApplicantEmail,
+                    CreatedAt = s.CreatedAt,
+                    DepartmentId = s.DepartmentId,
+                    UpdatedAt = s.UpdatedAt,
+                    EmployeeId = s.EmployeeId,
+                    EndDate = s.EndDate,
+                    Purpose = s.Purpose,
+                    RejectionReason = s.RejectionReason,
+                    StartDate = s.StartDate,
+                    StatusId = s.StatusId,
+                    ApplicationTypeId = s.ApplicationTypeId,
+                    Id = s.Id,
+                }).ToList();
             }
         }
     }
