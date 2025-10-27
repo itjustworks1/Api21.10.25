@@ -3,7 +3,7 @@ using Api21._10._25.DB;
 using MyMediator.Interfaces;
 using MyMediator.Types;
 
-namespace Api21._10._25.CQRS.Command
+namespace Api21._10._25.CQRS.Command.Applications
 {
     public class GetIdCommand : IRequest<ApplicationDTO>
     {

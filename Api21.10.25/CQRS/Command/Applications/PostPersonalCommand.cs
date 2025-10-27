@@ -3,21 +3,21 @@ using Api21._10._25.DB;
 using MyMediator.Interfaces;
 using MyMediator.Types;
 
-namespace Api21._10._25.CQRS.Command
+namespace Api21._10._25.CQRS.Command.Applications
 {
-    public class GetEmployeesByIdDepartmentCommand : IRequest
+    public class PostPersonalCommand : IRequest
     {
         public required ApplicationDTO Application { get; set; }
-        public class ApproveCommandHandler : IRequestHandler<GetEmployeesByIdDepartmentCommand, Unit>
+        public class PostPersonalCommandHandler : IRequestHandler<PostPersonalCommand, Unit>
         {
             private readonly Api211025Context db;
-            public ApproveCommandHandler(Api211025Context db)
+            public PostPersonalCommandHandler(Api211025Context db)
             {
                 this.db = db;
                 ApplicationType = db.ApplicationTypes.FirstOrDefault(s => s.Value == "personal");
             }
             private ApplicationType ApplicationType {  get; set; }
-            public async Task<Unit> HandleAsync(GetEmployeesByIdDepartmentCommand request, CancellationToken ct = default)
+            public async Task<Unit> HandleAsync(PostPersonalCommand request, CancellationToken ct = default)
             {
                 db.Applications.Add( new Application() { 
                     ApplicantEmail = request.Application.ApplicantEmail,

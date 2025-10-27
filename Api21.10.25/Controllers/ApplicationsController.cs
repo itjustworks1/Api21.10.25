@@ -1,4 +1,5 @@
 ﻿using Api21._10._25.CQRS.Command;
+using Api21._10._25.CQRS.Command.Applications;
 using Api21._10._25.CQRS.DTO;
 using Api21._10._25.DB;
 using Microsoft.AspNetCore.Mvc;
@@ -45,9 +46,10 @@ namespace Api21._10._25.Controllers
             return Ok();
         }
         [HttpGet("group/{email}")]
-        public async Task<ActionResult> GetGroup()
+        public async Task<ActionResult<RaApplicationDTO>> GetGroup(string email)
         {
-
+            var command = new GetGroupCommand() { Email = email };
+            await mediator.SendAsync(command);
             return Ok();
         }
     }
